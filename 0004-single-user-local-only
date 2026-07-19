@@ -1,0 +1,23 @@
+# 4. Single-user, local-only for v1
+
+**Status:** Accepted — 2026-07-14
+
+## Context
+
+	Multi-user options form a ladder: local-only, synced accounts, private-social, public feed, fully collective — and every rung upward adds a backend, authentication, moderation, data-protection duties (GDPR; the developer is in the EU), and cost. The goal for v1 is to ship something small and free.
+
+On whether "collective" helps gratitude specifically, the evidence is split:
+
+- Expressing gratitude *directly to a specific person* is powerful. In a preregistered study of 916 people, one-to-one texting beat both private journaling and public posting for boosting social connectedness.
+- But *public* posting is the weak, risky form. "Performative gratitude" can foster image-driven motivation and undercut the authentic noticing the app depends on.
+
+## Decision
+
+	v1 is single-user and local-only: entries are stored on the user's own device, with no accounts, no server, and no social features. The one well-supported social benefit — direct expression — is captured cheaply as an occasional prompt (e.g. "Is there someone you could thank directly?"), leaving the act to the user. No public feed, now or as a near-term plan.
+
+## Consequences
+
+- Zero server cost, no login to build, no moderation burden, and minimal data-protection exposure (data never leaves the device).
+- **Trade-off:** no cross-device sync, and no server backup — entries live on one device.
+- The strongest social finding is still surfaced, without any multi-user machinery.
+- If a social dimension is ever added, it should be private or one-to-one, never a public feed.
