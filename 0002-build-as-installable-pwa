@@ -1,0 +1,25 @@
+# 2. Build as an installable PWA
+
+**Status:** Accepted — 2026-07-14
+
+## Context
+
+	The app must run "regardless of platform," be free to build and host (spending only if user reception later justifies it), be publishable as a portfolio piece, and open like a regular program rather than requiring terminal commands. An earlier prototype was a Windows PowerShell script, which failed most of these: Windows-only, awkward to distribute, and launched from the command line.
+
+Options considered:
+
+- **PowerShell script** — already partly built, but Windows-only and painful to share.
+- **Cross-platform desktop app (Tauri / Electron)** — real native feel and can self-launch, but distributing it cleanly requires paid code-signing, and it is heavier to learn.
+- **Installable PWA (plain HTML/CSS/JS)** — one URL works across Windows, macOS, Linux, and Android; installs to open in its own window with its own icon (no browser chrome); free to host; no signing cost.
+
+## Decision
+
+Build v1 as a plain static web app (HTML/CSS/JS) packaged as an installable PWA, hosted free on GitHub Pages.
+
+## Consequences
+
+- Meets all four constraints: cross-platform, free, portfolio-ready (a clickable live link), and opens like a regular program once installed.
+- No code-signing cost, because the app is served over HTTPS rather than distributed as a binary.
+- **Trade-off:** a web app cannot truly self-launch when closed, nor force an un-dismissable takeover. Scheduled reminders become best-effort, and are weakest on iOS (install-to-home-screen only, limited background behaviour). Acceptable because ADR-0003 removes the need for coercion anyway.
+- Firefox desktop does not install PWAs via manifest; Chrome, Edge, and Safari do. The app still works in any browser regardless.
+- If reception later justifies it, a signed Tauri build could revisit true self-launching — deferred, not committed.
