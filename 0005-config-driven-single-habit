@@ -1,0 +1,21 @@
+# 5. One configurable habit, engine-ready for more
+
+**Status:** Accepted — 2026-07-14
+
+## Context
+
+	The long-term idea is to support other good habits (e.g. brushing teeth) using the same techniques. The temptation is to build a general multi-habit framework now. But building an abstraction before there are real cases to generalise from tends to produce the *wrong* abstraction (YAGNI; the "rule of three" — abstract on the third instance, not the first).
+
+	Crucially, the habit *mechanism* generalises, but the *parameters* do not: gratitude wants a gentle, varied, non-daily cadence (see ADR-0003), while brushing teeth wants a strict twice-daily one with no variety. A naïve one-size engine would apply the wrong rules to one of them.
+
+## Decision
+
+	Build v1 as one fixed engine (nudge → write → save → acknowledge → forgiving streak) that reads a single habit configuration object: name, cue, cadence, prompt set, whether variety matters, streak style, done-condition, and an (empty) benefit-copy slot. Ship exactly one config populated — gratitude. Do **not** build the multi-habit framework yet. Apply separation of concerns and the open-closed principle so a future habit can be added as a new config, informed by a real second case.
+
+## Consequences
+
+- Future same-shaped habits can be added as data (a new config) rather than by rewriting the engine.
+- v1 stays simple; this is cleaner than hard-coding "gratitude" throughout, at near-zero extra cost.
+- Trade-off: no design anticipates every possible extension. A future habit needing a genuinely new interaction (a photo, a live timer, GPS) will still require engine changes, and the truly shared structure will likely be refined when the second real habit arrives.
+
+*Principles: "You Aren't Gonna Need It" (Ron Jeffries); the Rule of Three; separation of concerns (Dijkstra, 1974); the open-closed principle (Bertrand Meyer).*
