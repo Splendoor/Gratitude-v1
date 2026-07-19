@@ -1,0 +1,31 @@
+# 3. Autonomy-supportive design, not coercion
+
+**Status:** Accepted — 2026-07-14
+
+## Context
+
+	The original concept "coerced" the user — a pop-up at a set time that could not be dismissed until an entry was submitted. The intuition was that the persistence of the app would install the habit, and the repetition would make it stick. The behaviour-change and gratitude research points the other way:
+
+- Habits form through repetition in a stable context with low friction and positive emotion, not willpower (Fogg, *Tiny Habits*; habit-automaticity research, Lally et al. 2010). Aversive or monotonous repetition specifically fails to produce lasting automaticity.
+- Coercion risks psychological reactance and can crowd out intrinsic motivation (the overjustification effect).
+- Gratitude's benefit depends on genuine, specific noticing; forcing positivity and generic repetition are documented ways to kill it. Effects are real but modest (~0.2), and doing it too often causes "gratitude fatigue" — once a week outperformed three times a week in Lyubomirsky & Sheldon (2005). Note the literature also has known rigour limits, so benefits should be presented honestly, not oversold.
+
+## Decision
+
+Design the app to invite and support the habit rather than enforce it, via four evidence-based levers plus gratitude-specific tuning:
+
+1. **Self-chosen cue** — the user sets their own "when X, then I note one thing" plan (implementation intention; Gollwitzer & Sheeran, d ≈ 0.65).
+2. **Tiny and frictionless** — one line counts; a rotating specific prompt fights autopilot.
+3. **Immediate positive emotion** — a small, genuine acknowledgment the instant the entry is saved (not a large fanfare).
+4. **Forgiving tracking** — "never miss twice"; a missed day never resets progress.
+5. **Gentle cadence** — user-chosen, defaulting to a few times a week rather than forced daily.
+6. **No benefits lecture in v1** — the user self-selected by installing a gratitude app, so a persistent "this is good for you" nag is dropped. An empty content slot is left in case that changes.
+
+Skipping or closing is always available, without penalty.
+
+## Consequences
+
+- Should produce genuine practice rather than hollow compliance, and is less likely to be abandoned.
+- Removes the need for platform-level coercion, aligning with the PWA choice (ADR-0002).
+- **Trade-off:** for a user who is actively resistant and *wants* external enforcement, a gentle design underperforms. That user is out of scope for v1.
+- "Showing up" now rests on a dependable-but-dismissible cue. If the cue is softened too far, the habit will not trigger — so the cue must stay reliable; only the enforcement is removed.
