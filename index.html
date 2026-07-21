@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B1F2E">
+<meta name="description" content="A quiet daily invitation to note one thing you're grateful for. Yours alone, on your own device.">
+<title>One Thing</title>
+
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&display=swap" rel="stylesheet">
+
+<style>
+/* ---------------------------------------------------------------
+   Design tokens. Dusk palette — this is an app you open at night.
+   --------------------------------------------------------------- */
+:root{
+  --ink:   #1B1F2E;   /* ground: deep blue-violet, not black */
+  --dusk:  #252B40;   /* raised surface */
+  --haze:  #39415E;   /* borders, rules */
+  --moth:  #C7CAD9;   /* primary text: soft cool white */
+  --dim:   #7A819B;   /* secondary text */
+  --lilac: #A99BD6;   /* accent: the one thing */
+  --ember: #E9C6A0;   /* warmth: only ever the acknowledgment */
+
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+  --ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --hand: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  --step: 1.6rem;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+html, body{ height:100%; }
+
+body{
+  background: var(--ink);
+  background-image: radial-gradient(120% 80% at 50% 0%, #2A3048 0%, var(--ink) 62%);
+  background-attachment: fixed;
+  color: var(--moth);
+  font-family: var(--ui);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  padding: clamp(1.2rem, 5vh, 3rem) 1.25rem;
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+.stage{
+  width: 100%;
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+}
+
+/* --- shared type ------------------------------------------------ */
+.eyebrow{
+  font-size: .7rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 1.4rem;
+}
+.serif{
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(1.35rem, 5.4vw, 1.7rem);
+  line-height: 1.45;
+  letter-spacing: -.01em;
+}
+.quiet{ color: var(--dim); font-size: .85rem; line-height: 1.6; }
+
+/* --- the plan sentence: the user's own words, their own cue ----- */
+.plan{ margin-bottom: var(--step); }
+.plan .fill{
+  color: var(--lilac);
+  border-bottom: 1px solid var(--haze);
+  padding-bottom: .1em;
+  white-space: nowrap;
+}
+
+.field{
+  display: inline-flex;
+  align-items: baseline;
+}
+select, input[type="time"]{
+  font: inherit;
+  font-family: var(--display);
+  font-size: inherit;
+  color: var(--lilac);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--haze);
+  padding: 0 .15em .1em;
+  cursor: pointer;
+  transition: border-color .18s ease;
+}
+select:hover, input[type="time"]:hover{ border-bottom-color: var(--lilac); }
+select option{ background: var(--dusk); color: var(--moth); font-family: var(--ui); }
+
+/* --- prompt & entry --------------------------------------------- */
+.prompt{
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.3rem, 5.2vw, 1.6rem);
+  line-height: 1.45;
+  color: var(--moth);
+  margin-bottom: 1.1rem;
+}
+
+textarea{
+  width: 100%;
+  min-height: 6.5rem;
+  resize: vertical;
+  font-family: var(--hand);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--moth);
+  background: var(--dusk);
+  border: 1px solid var(--haze);
+  border-radius: 3px;
+  padding: .85rem .95rem;
+  transition: border-color .18s ease;
+}
+textarea::placeholder{ color: #565D78; }
+textarea:hover{ border-color: #47506F; }
+
+/* --- buttons ---------------------------------------------------- */
+.actions{
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin-top: 1.3rem;
+  flex-wrap: wrap;
+}
+button{
+  font-family: var(--ui);
+  font-size: .9rem;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: var(--moth);
+}
+.primary{
+  background: var(--lilac);
+  color: #1B1F2E;
+  border-radius: 3px;
+  padding: .62rem 1.15rem;
+  font-weight: 500;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.primary:hover{ opacity: .88; }
+.primary:active{ transform: translateY(1px); }
+.primary:disabled{ opacity: .35; cursor: default; transform: none; }
+.ghost{
+  color: var(--dim);
+  padding: .62rem 0;
+  transition: color .18s ease;
+}
+.ghost:hover{ color: var(--moth); }
+
+:focus-visible{
+  outline: 2px solid var(--lilac);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --- the acknowledgment: one warm bloom, then gone -------------- */
+.ack{ position: relative; text-align: center; padding: 2rem 0; }
+.bloom{
+  position: absolute;
+  inset: -20% -10%;
+  background: radial-gradient(circle at 50% 50%, rgba(233,198,160,.20), transparent 62%);
+  animation: bloom 2.4s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes bloom{
+  0%   { opacity:0; transform: scale(.72); }
+  28%  { opacity:1; }
+  100% { opacity:0; transform: scale(1.08); }
+}
+.ack-word{
+  position: relative;
+  font-family: var(--display);
+  font-size: 1.7rem;
+  font-weight: 300;
+  color: var(--ember);
+  margin-bottom: 1rem;
+}
+.ack-echo{
+  position: relative;
+  font-family: var(--hand);
+  font-size: .92rem;
+  line-height: 1.7;
+  color: var(--dim);
+  max-width: 24rem;
+  margin: 0 auto;
+}
+
+/* --- today's saved note ----------------------------------------- */
+.note{
+  border-left: 2px solid var(--haze);
+  padding-left: .9rem;
+  font-family: var(--hand);
+  font-size: .92rem;
+  line-height: 1.7;
+  color: var(--dim);
+  margin-bottom: var(--step);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.rule{ border-top: 1px solid var(--haze); margin: 1.6rem 0 1.1rem; }
+
+.fade{ animation: fade .5s ease both; }
+@keyframes fade{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform:none;} }
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+
+<body>
+<main class="stage" id="app"></main>
+
+<script>
+"use strict";
+
+/* =================================================================
+   THE HABIT CONFIG  (see docs/adr/0005-config-driven-single-habit.md)
+   Everything specific to gratitude lives in this object. The engine
+   below never mentions gratitude. A second habit = a second config.
+   ================================================================= */
+const HABIT = {
+  id: "gratitude",
+  title: "One Thing",
+
+  // Completes the user's if-then plan sentence.
+  planVerb: "note one thing I'm grateful for",
+
+  // Rotating prompts. Variety fights the "health, family, job" autopilot.
+  varietyMatters: true,
+  prompts: [
+    "What went right today that you didn't expect?",
+    "What small thing worked exactly as it should have?",
+    "Who made your day easier?",
+    "What did you almost not notice?",
+    "Who could you thank directly for something? Consider telling them.",
+    "What's something ordinary you'd miss if it were gone?",
+    "What went better than the last time you tried it?",
+    "What did someone do that they didn't have to do?"
+  ],
+
+  placeholder: "One line is enough.",
+
+  // Cadence options. minGapDays = smallest gap between invitations.
+  // Gratitude wears out if forced daily, so the default is gentler.
+  cadences: [
+    { id: "daily",  label: "every day",           minGapDays: 1 },
+    { id: "few",    label: "a few times a week",  minGapDays: 2 },
+    { id: "weekly", label: "once a week",         minGapDays: 7 }
+  ],
+  defaultCadence: "few",
+  defaultTime: "21:00",
+
+  // An entry counts when it isn't empty. One line clears the bar.
+  isDone: text => text.trim().length > 0,
+
+  // Small and genuine. Not fanfare.
+  acknowledgments: ["Noted.", "That's the one.", "Good.", "Kept.", "Worth having."],
+
+  streakStyle: "forgiving",  // declared for the engine; not surfaced in v1
+  benefitCopy: null          // deliberately empty — see ADR-0003
+};
+
+/* =================================================================
+   STORAGE — local only, this device, no accounts. (ADR-0004)
+   ================================================================= */
+const KEY = "onething:v1:";
+const store = {
+  get(k, fallback){
+    try { const v = localStorage.getItem(KEY + k); return v === null ? fallback : JSON.parse(v); }
+    catch { return fallback; }
+  },
+  set(k, v){
+    try { localStorage.setItem(KEY + k, JSON.stringify(v)); } catch { /* private mode: run in memory */ }
+  }
+};
+
+const today = () => new Date().toISOString().slice(0, 10);
+const daysBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000);
+
+/* =================================================================
+   THE ENGINE — habit-agnostic. Reads HABIT, renders screens.
+   nudge -> write -> save -> acknowledge
+   ================================================================= */
+const app = document.getElementById("app");
+
+function plan(){ return store.get("plan", null); }
+function entries(){ return store.get("entries", []); }
+
+function lastEntry(){
+  const all = entries();
+  return all.length ? all[all.length - 1] : null;
+}
+
+/* Is the invitation due? Never blocks writing — only decides whether
+   the app speaks first. A skip is respected for the rest of the day. */
+function isDue(){
+  const p = plan();
+  if (!p) return false;
+  if (store.get("skipped", null) === today()) return false;
+
+  const now = new Date();
+  const [h, m] = p.time.split(":").map(Number);
+  const moment = new Date(); moment.setHours(h, m, 0, 0);
+  if (now < moment) return false;
+
+  const last = lastEntry();
+  if (!last) return true;
+
+  const gap = daysBetween(last.date, today());
+  const cadence = HABIT.cadences.find(c => c.id === p.cadence) || HABIT.cadences[1];
+  return gap >= cadence.minGapDays;
+}
+
+/* Rotate through prompts so the same question doesn't go stale. */
+function nextPrompt(){
+  if (!HABIT.varietyMatters) return HABIT.prompts[0];
+  const i = store.get("promptIndex", -1);
+  const next = (i + 1) % HABIT.prompts.length;
+  store.set("promptIndex", next);
+  return HABIT.prompts[next];
+}
+
+function esc(s){
+  return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+
+function show(html){
+  app.innerHTML = `<div class="fade">${html}</div>`;
+}
+
+/* ---------- screen: setup (first run, and "change" later) -------- */
+function screenSetup(isFirstRun){
+  const p = plan() || { time: HABIT.defaultTime, cadence: HABIT.defaultCadence };
+  const times = [];
+  for (let h = 0; h < 24; h++) for (const m of ["00", "30"]) {
+    times.push(`${String(h).padStart(2, "0")}:${m}`);
+  }
+
+  show(`
+    <p class="eyebrow">${isFirstRun ? "Set your plan" : "Your plan"}</p>
+    <p class="serif plan">
+      When it's
+      <span class="field"><select id="time" aria-label="Your moment">
+        ${times.map(t => `<option value="${t}"${t === p.time ? " selected" : ""}>${t}</option>`).join("")}
+      </select></span>,
+      I'll ${HABIT.planVerb} —
+      <span class="field"><select id="cadence" aria-label="How often">
+        ${HABIT.cadences.map(c => `<option value="${c.id}"${c.id === p.cadence ? " selected" : ""}>${c.label}</option>`).join("")}
+      </select></span>.
+    </p>
+    <p class="quiet">Pick a moment you're usually free — the plan works better when it's yours. You can change it whenever, and skip any evening without penalty.</p>
+    <div class="actions">
+      <button class="primary" id="save-plan">${isFirstRun ? "That's my plan" : "Save plan"}</button>
+      ${isFirstRun ? "" : `<button class="ghost" id="back">Back</button>`}
+    </div>
+  `);
+
+  document.getElementById("save-plan").onclick = () => {
+    store.set("plan", {
+      time: document.getElementById("time").value,
+      cadence: document.getElementById("cadence").value
+    });
+    screenHome();
+  };
+  const back = document.getElementById("back");
+  if (back) back.onclick = screenHome;
+}
+
+/* ---------- screen: home / the nudge ---------------------------- */
+function screenHome(){
+  const p = plan();
+  if (!p) return screenSetup(true);
+
+  const last = lastEntry();
+  const wroteToday = last && last.date === today();
+  const cadence = HABIT.cadences.find(c => c.id === p.cadence) || HABIT.cadences[1];
+  const due = isDue();
+
+  const planLine = `
+    <p class="serif plan">
+      When it's <span class="fill">${p.time}</span>, I'll ${HABIT.planVerb} —
+      <span class="fill">${cadence.label}</span>.
+    </p>`;
+
+  if (due) {
+    show(`
+      <p class="eyebrow">It's your moment</p>
+      ${planLine}
+      <div class="actions">
+        <button class="primary" id="go">Write one</button>
+        <button class="ghost" id="skip">Not tonight</button>
+      </div>
+    `);
+    document.getElementById("go").onclick = screenWrite;
+    document.getElementById("skip").onclick = () => { store.set("skipped", today()); screenHome(); };
+    return;
+  }
+
+  show(`
+    <p class="eyebrow">${wroteToday ? "Today" : "Your plan"}</p>
+    ${wroteToday ? `<p class="note">${esc(last.text)}</p>` : planLine}
+    <div class="actions">
+      <button class="ghost" id="go">${wroteToday ? "Add another" : "Write one now"}</button>
+    </div>
+    <div class="rule"></div>
+    <p class="quiet">Kept on this device only. <button class="ghost" id="edit" style="font-size:.85rem;padding:0;text-decoration:underline;">Change your plan</button></p>
+  `);
+  document.getElementById("go").onclick = screenWrite;
+  document.getElementById("edit").onclick = () => screenSetup(false);
+}
+
+/* ---------- screen: write --------------------------------------- */
+function screenWrite(){
+  const prompt = nextPrompt();
+
+  show(`
+    <p class="eyebrow">${HABIT.title}</p>
+    <p class="prompt">${esc(prompt)}</p>
+    <textarea id="entry" placeholder="${esc(HABIT.placeholder)}" aria-label="${esc(prompt)}"></textarea>
+    <div class="actions">
+      <button class="primary" id="save" disabled>Save this</button>
+      <button class="ghost" id="skip">Not tonight</button>
+    </div>
+  `);
+
+  const box = document.getElementById("entry");
+  const save = document.getElementById("save");
+
+  box.focus();
+  box.oninput = () => { save.disabled = !HABIT.isDone(box.value); };
+  box.onkeydown = e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && !save.disabled) commit(box.value, prompt);
+  };
+  save.onclick = () => commit(box.value, prompt);
+  document.getElementById("skip").onclick = () => { store.set("skipped", today()); screenHome(); };
+}
+
+/* ---------- save + acknowledge ---------------------------------- */
+function commit(text, prompt){
+  const all = entries();
+  all.push({
+    habit: HABIT.id,
+    text: text.trim(),
+    prompt,
+    date: today(),
+    at: new Date().toISOString()
+  });
+  store.set("entries", all);
+  screenAck(text.trim());
+}
+
+function screenAck(text){
+  const word = HABIT.acknowledgments[Math.floor(Math.random() * HABIT.acknowledgments.length)];
+  show(`
+    <div class="ack">
+      <div class="bloom"></div>
+      <p class="ack-word">${word}</p>
+      <p class="ack-echo">${esc(text)}</p>
+    </div>
+  `);
+  const done = () => screenHome();
+  const t = setTimeout(done, 2600);
+  app.onclick = () => { clearTimeout(t); app.onclick = null; done(); };
+}
+
+/* ---------- start ----------------------------------------------- */
+plan() ? screenHome() : screenSetup(true);
+
+/* Service worker: makes the app installable and available offline. */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => { /* fine — app still works */ });
+  });
+}
+</script>
+</body>
+</html>
