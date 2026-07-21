@@ -14,7 +14,7 @@ The design deliberately drops "coercion" (forced pop-ups you can't dismiss), whi
 
 ## Live demo
 
-*Coming soon* — will be hosted free on GitHub Pages. 
+(https://splendoor.github.io/Gratitude-v1/) 
 
 ## Tech
 
